@@ -11,7 +11,9 @@ from random import randint as random
 def warn_name(user_name):
     """проверяет ввод и запрашивает имя пользователя"""
     if not user_name:
-        choice = input('Не хотите указывать имя? 1 - укажу | 0 - нет ')
+        choice = input(
+            'Не хотите указывать имя? 1 - укажу | 0 - нет '
+        )
         if choice == '1':
             return input('Пожалуйста, укажите Ваше имя: ')
         else:
@@ -22,14 +24,30 @@ def warn_name(user_name):
 
 def warn_age(user_age):
     """проверяет ввод и запрашивает возраст пользователя"""
-    if not user_age:
-        choice_age = input('Не хотите указывать возраст? 1 - укажу | 0 - нет')
-        if choice_age == '1':
-            return input('Пожалуйста, укажите Ваш возраст: ')
+    while True:
+        if not user_age:
+            choice = input(
+                'Вы не указали возраст. Хотите указать? '
+                '1 - да | 0 - нет: '
+            )
+            if choice == '1':
+                user_age = input('Пожалуйста, укажите Ваш возраст: ')
+                try:
+                    float(user_age.replace(',', '.'))
+                    return user_age
+                except ValueError:
+                    print('Возраст должен быть числом')
+                    user_age = ''
+                    continue
+            elif choice == '0':
+                user_age = random(5, 100)
+                print(f'Ваш случайный возраст {user_age} лет!')
+                return user_age
+            else:
+                print('Введите 1 (да) или 0 (нет)')
+                continue
         else:
-            user_age = random(5, 100)
-            print(f'Ваш случайный возраст {user_age} лет!')
-    return user_age
+            return user_age
 
 
 def warn_height(height):
@@ -62,21 +80,23 @@ def warn_weight(weight):
             return weight
         except ValueError:
             weight = input('Пожалуйста, укажите вес (цифрами): ')
-    
 
 
 def warn_water(water_usage):
     """проверяет и запрашивает потребление воды человеком"""
-    global weight  # используем глобальную переменную
-    
     while True:
-        choice = input('Не хотите указывать сколько воды пьете? 1 - да | 0 - нет: ')
-        
+        try:
+            choice = input(
+                'Не хотите указывать сколько воды пьете? 1 - да | 0 - нет: '
+            )
+        except EOFError:
+            water_norm = round((weight * 30) / 1000, 1)
+            print(f'Вам нужно минимум {water_norm} литра воды в день.')
+            return str(water_norm)
         if choice == '0':
             water_norm = round((weight * 30) / 1000, 1)
             print(f'Вам нужно минимум {water_norm} литра воды в день.')
             return str(water_norm)
-        
         if choice == '1':
             water_usage = input('Сколько воды в день Вы пьете (в литрах)? ')
             if not water_usage:
@@ -112,7 +132,6 @@ def water_recommend(user_age, water_usage, weight):
     else:
         print('Вы пьете достаточно воды, так держать!')
         return None
-   
 
 
 def print_results():
